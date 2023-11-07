@@ -14,8 +14,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener {
-            binding.textView.text = "Привет!"
-        }
+        binding.button.setOnClickListener { onButtonClicked() }
+    }
+
+    private fun onButtonClicked() {
+
     }
 }
