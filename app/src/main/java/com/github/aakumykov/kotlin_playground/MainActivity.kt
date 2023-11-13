@@ -3,6 +3,7 @@ package com.github.aakumykov.kotlin_playground
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aakumykov.kotlin_playground.databinding.ActivityMainBinding
+import com.github.aakumykov.kotlin_playground.extensions.showToast
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +19,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onButtonClicked() {
-
+        showToast("Привет :-)")
     }
 }
