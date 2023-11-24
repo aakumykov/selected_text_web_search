@@ -15,10 +15,25 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener { onButtonClicked() }
+        binding.button.setOnClickListener { action1() }
+        binding.button2.setOnClickListener { action2() }
+        binding.button3.setOnClickListener { action3() }
+        binding.button4.setOnClickListener { action4() }
     }
 
-    private fun onButtonClicked() {
+    private fun action1() {
         showToast("Привет :-)")
+    }
+
+    private fun action2() {
+        showToast("Привет 2")
+    }
+
+    private fun action3() {
+        showToast("Привет 3")
+    }
+
+    private fun action4() {
+        showToast("Привет 4")
     }
 }
