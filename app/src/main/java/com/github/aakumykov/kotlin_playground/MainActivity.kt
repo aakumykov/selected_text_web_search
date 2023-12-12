@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import com.github.aakumykov.kotlin_playground.databinding.ActivityMainBinding
+import com.github.aakumykov.kotlin_playground.extensions.LogD
 import com.github.aakumykov.kotlin_playground.extensions.showToast
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         Logger.d(TAG, "onCreate()")
+
+        LogD("onCreate()")
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
