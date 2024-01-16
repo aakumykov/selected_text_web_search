@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding.appInfoButton.setOnClickListener { showAppProperties() }
         binding.clearLogButton.setOnClickListener { Logger.clear() }
 
-        binding.button.setOnClickListener {action1() }
+        binding.button1.setOnClickListener {action1() }
         binding.button2.setOnClickListener { action2() }
         binding.button3.setOnClickListener { action3() }
         binding.button4.setOnClickListener { action4() }
