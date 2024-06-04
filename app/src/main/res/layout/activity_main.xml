@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/design_default_color_primary"
         app:titleTextColor="@color/design_default_color_on_primary"
-        tools:title="Пробный заголовок"
+        app:title="@string/project_title"
         app:navigationIconTint="@color/design_default_color_on_primary"
         />
 

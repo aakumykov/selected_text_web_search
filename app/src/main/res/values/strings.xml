@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Песочница Kotlin</string>
+    <string name="accessibility_service_label">Пробная служба поддержки доступности</string>
+    <string name="accessibility_service_description">Пробная служба поддержки доступности</string>
+    <string name="project_title">Заготовка песочницы на Kotlin</string>
 </resources>
