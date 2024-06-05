@@ -1,13 +1,16 @@
 package com.github.aakumykov.kotlin_playground
 
-import android.accessibilityservice.AccessibilityGestureEvent
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class MyAccessibilityService : AccessibilityService() {
 
@@ -41,19 +44,22 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onInterrupt() {}
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        event?.also { e ->
 
-            debugLog("eventType: ${e.eventType}, " +
-                    "action: ${e.action}, " +
-                    "windowId: ${e.windowId}, " +
-                    "packageName: ${e.packageName}, " +
-                    "windowChanges: ${e.windowChanges}")
+        val rootView = rootInActiveWindow
 
-            e.source?.apply {
-                debugLog("packageName: ${packageName}")
-                performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, bundleOf())
+        debugLog("--------------")
+        debugLog("rootView.packageName: ${rootView.packageName}, childCount: ${rootView.childCount}")
+
+        rootView.apply {
+            for (i in 0..<childCount) {
+                val child = getChild(i)
+                val className = child.className
+                val text = child.text
+                val desc = child.contentDescription
+                debugLog("┝━━ i=$i, className: $className, text: $text, desc: $desc")
             }
         }
+
     }
 
     private fun debugLog(text: String) {

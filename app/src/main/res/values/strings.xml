@@ -4,4 +4,6 @@
     <string name="accessibility_service_description">Пробная служба поддержки доступности</string>
     <string name="project_title">Пробы AccessibilityService</string>
     <string name="accessibilityservice_id">com.github.aakumykov.kotlin_playground/.MyAccessibilityService</string>
+    <string name="description_clear_log_button">Очистка журнала</string>
+    <string name="description_app_info_button">Системные свойства приложения</string>
 </resources>
