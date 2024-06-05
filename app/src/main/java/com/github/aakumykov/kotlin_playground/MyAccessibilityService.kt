@@ -54,10 +54,9 @@ class MyAccessibilityService : AccessibilityService() {
         layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
             replayUserGesturesOneByOne(GestureStorage.popFirst())
 
-            UserGestureSimplifier(GestureStorage.getAll()).simplifyMax().also {
+            /*UserGestureSimplifier(GestureStorage.getAll()).simplifyMax().also {
                 replayUserGesturesOneByOne(it)
-            }
-
+            }*/
         }
 
         wm.addView(layout, lp)
