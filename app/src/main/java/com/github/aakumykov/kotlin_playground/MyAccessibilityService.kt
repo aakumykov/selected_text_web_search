@@ -3,19 +3,50 @@ package com.github.aakumykov.kotlin_playground
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.accessibilityservice.GestureDescription.StrokeDescription
+import android.graphics.PixelFormat
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Button
+import android.widget.ImageButton
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class MyAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         debugLog("onServiceConnected()")
+        debugServiceInfo()
+        showControlButtons()
+    }
+
+    private fun showControlButtons() {
+        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        val layout = ConstraintLayout(this)
+        val lp = WindowManager.LayoutParams().apply {
+            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            format = PixelFormat.TRANSLUCENT
+            flags = flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            width = WindowManager.LayoutParams.WRAP_CONTENT
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+            gravity = Gravity.START
+        }
+
+        val inflater = LayoutInflater.from(this)
+        inflater.inflate(R.layout.service_controls_layout, layout)
+
+        layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
+            performSwipeDownGesture()
+        }
+
+        wm.addView(layout, lp)
+    }
+
+    private fun debugServiceInfo() {
         serviceInfo?.also {
             debugLog(("serviceInfo: $it"))
-            /*it.packageNames?.joinToString { "," }.also {
-                debugLog(("packageNames: $it"))
-            }*/
         }
     }
 
@@ -77,7 +108,7 @@ class MyAccessibilityService : AccessibilityService() {
         if (isBrowserWebView(node, WEB_PAGE_TITLE)) {
             debugLog("Найден WebView с '${WEB_PAGE_TITLE}'")
 //            scrollDownOnNode(node)
-            makeSwipeDownGesture()
+            performSwipeDownGesture()
         }
 
         return with(node) {
@@ -85,11 +116,11 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
-    private fun makeSwipeDownGesture() {
+    private fun performSwipeDownGesture() {
         debugLog("makeSwipeDownGesture()")
 
         dispatchGesture(
-            swipeFromUpToDownGesture(),
+            createSwipeFromUpToDownGesture(),
             object: GestureResultCallback() {
                 override fun onCompleted(gestureDescription: GestureDescription?) {
                     super.onCompleted(gestureDescription)
@@ -105,7 +136,7 @@ class MyAccessibilityService : AccessibilityService() {
         )
     }
 
-    private fun swipeFromUpToDownGesture(): GestureDescription {
+    private fun createSwipeFromUpToDownGesture(): GestureDescription {
         return GestureDescription.Builder().apply {
             addStroke(StrokeDescription(swipeDownPath(),0, 1000))
         }.build()

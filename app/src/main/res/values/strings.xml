@@ -6,4 +6,6 @@
     <string name="accessibilityservice_id">com.github.aakumykov.kotlin_playground/.MyAccessibilityService</string>
     <string name="description_clear_log_button">Очистка журнала</string>
     <string name="description_app_info_button">Системные свойства приложения</string>
+    <string name="record_gestures">Записать жесты</string>
+    <string name="replay_gestures">▶</string>
 </resources>
