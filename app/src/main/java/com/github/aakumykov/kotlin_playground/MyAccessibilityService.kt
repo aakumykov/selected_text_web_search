@@ -37,7 +37,7 @@ class MyAccessibilityService : AccessibilityService() {
         inflater.inflate(R.layout.service_controls_layout, layout)
 
         layout.findViewById<Button>(R.id.buttonRecordGestures).setOnClickListener { view ->
-            GestureRecordActivity.apply {
+            /*GestureRecordActivity.apply {
                 if (isRecordingNow()) {
                     (view as Button).text = getString(R.string.start_recording_emoji)
                     stopRecording()
@@ -47,16 +47,20 @@ class MyAccessibilityService : AccessibilityService() {
                     GestureStorage.clear()
                     startRecording()
                 }
-            }
+            }*/
 
+            swipePageUp()
         }
 
         layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
-            replayUserGesturesOneByOne(GestureStorage.popFirst())
+
+//            replayUserGesturesOneByOne(GestureStorage.popFirst())
 
             /*UserGestureSimplifier(GestureStorage.getAll()).simplifyMax().also {
                 replayUserGesturesOneByOne(it)
             }*/
+
+            swipePageDown()
         }
 
         wm.addView(layout, lp)
@@ -151,7 +155,7 @@ class MyAccessibilityService : AccessibilityService() {
         if (isBrowserWebView(node, WEB_PAGE_TITLE)) {
             debugLog("Найден WebView с '${WEB_PAGE_TITLE}'")
 //            scrollDownOnNode(node)
-            performSwipeDownGesture()
+            swipePageDown()
         }
 
         return with(node) {
@@ -159,36 +163,45 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
-    private fun performSwipeDownGesture() {
-        debugLog("makeSwipeDownGesture()")
-
+    private fun swipePageDown(duration: Long = 1000) {
         dispatchGesture(
-            createSwipeFromUpToDownGesture(),
-            object: GestureResultCallback() {
-                override fun onCompleted(gestureDescription: GestureDescription?) {
-                    super.onCompleted(gestureDescription)
-                    debugLog("onCompleted()")
-                }
-
-                override fun onCancelled(gestureDescription: GestureDescription?) {
-                    super.onCancelled(gestureDescription)
-                    debugLog("onCancelled()")
-                }
-            },
+            createUpSwipe(duration),
+            null,
             null
         )
     }
 
-    private fun createSwipeFromUpToDownGesture(): GestureDescription {
+    private fun swipePageUp(duration: Long = 1000) {
+        dispatchGesture(createDownSwipe(duration), null, null)
+    }
+
+    private fun createUpSwipe(duration: Long): GestureDescription {
         return GestureDescription.Builder().apply {
-            addStroke(StrokeDescription(swipeDownPath(),0, 1000))
+            addStroke(
+                StrokeDescription(swipeUpPath(),0, duration)
+            )
         }.build()
+    }
+
+    private fun createDownSwipe(duration: Long): GestureDescription {
+        return GestureDescription.Builder().apply {
+            addStroke(
+                StrokeDescription(swipeDownPath(),0, duration)
+            )
+        }.build()
+    }
+
+    private fun swipeUpPath(): android.graphics.Path {
+        return android.graphics.Path().apply {
+            moveTo(360f, 1000f)
+            lineTo(360f, 150f)
+        }
     }
 
     private fun swipeDownPath(): android.graphics.Path {
         return android.graphics.Path().apply {
-            moveTo(360f, 1000f)
-            lineTo(360f, 150f)
+            moveTo(350f, 140f)
+            lineTo(370f, 1010f)
         }
     }
 
