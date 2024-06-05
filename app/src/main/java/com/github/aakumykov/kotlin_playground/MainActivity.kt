@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         binding.button4.setOnClickListener { action4() }
 
         GestureStorage.lastGesture.observe(this) { s -> Logger.d(tag(), s) }
+
+        if (!isAccessibilityServiceEnabled())
+            openAccessibilitySettings()
     }
 
     override fun onResume() {
@@ -67,6 +70,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun action1() {
+        openAccessibilitySettings()
+    }
+
+    private fun openAccessibilitySettings() {
         startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
     }
 
