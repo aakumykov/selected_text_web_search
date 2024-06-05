@@ -1,6 +1,6 @@
 package com.github.aakumykov.kotlin_playground
 
-class UserGestureSimplifier(private val gestureList: List<UserGesture>) {
+class UserGestureSimplifier(private val gestureList: List<GesturePoint>) {
 
     /**
      * Прореживает список, оставляя "пропуски" длиной в [gapSize].
@@ -10,7 +10,7 @@ class UserGestureSimplifier(private val gestureList: List<UserGesture>) {
 
     }*/
 
-    fun simplifyMax(): UserGesture? {
+    fun simplifyMax(): GesturePoint? {
         return when(gestureList.size) {
             0 -> null
             1 -> gestureList.first()
@@ -18,19 +18,16 @@ class UserGestureSimplifier(private val gestureList: List<UserGesture>) {
         }
     }
 
-    private fun simplifyReal(): UserGesture {
+    private fun simplifyReal(): GesturePoint {
 
         val fist = gestureList.first()
         val last = gestureList.last()
 
-        return UserGesture(
+        return GesturePoint(
             fromX = fist.fromX,
             fromY = fist.fromY,
             toX = last.toX,
             toY = last.toY,
-            startDelay = 0L,
-            duration = gestureList.map { it.duration }.reduce { acc, l -> l+acc; acc },
-            endingEventTime = last.endingEventTime
         )
     }
 }

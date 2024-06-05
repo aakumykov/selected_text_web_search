@@ -66,19 +66,19 @@ class MyAccessibilityService : AccessibilityService() {
         wm.addView(layout, lp)
     }
 
-    private fun replayUserGesturesOneByOne(userGesture: UserGesture?) {
+    private fun replayUserGesturesOneByOne(gesturePoint: GesturePoint?) {
 
-        if (null == userGesture)
+        if (null == gesturePoint)
             return
 
-        debugLog("userGesture: $userGesture")
+        debugLog("userGesture: $gesturePoint")
 
-        dispatchGesture(
-            userGesture.toGestureDescription(),
+        /*dispatchGesture(
+            gesturePoint.toGestureDescription(2000),
             object: GestureResultCallback() {
                 override fun onCompleted(gestureDescription: GestureDescription?) {
                     super.onCompleted(gestureDescription)
-                    GestureStorage.popFirst()?.also {
+                    GestureRecord.popFirst()?.also {
                         replayUserGesturesOneByOne(it)
                     }
                 }
@@ -88,7 +88,7 @@ class MyAccessibilityService : AccessibilityService() {
                 }
             },
             null
-        )
+        )*/
     }
 
     private fun debugServiceInfo() {

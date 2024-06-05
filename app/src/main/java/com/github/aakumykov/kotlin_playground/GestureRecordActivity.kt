@@ -12,6 +12,7 @@ class GestureRecordActivity : AppCompatActivity(),
     GestureDetector.OnDoubleTapListener {
 
     private lateinit var mDetector: GestureDetectorCompat
+    private var gestureRecord: GestureRecord = GestureRecord()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,15 +68,11 @@ class GestureRecordActivity : AppCompatActivity(),
     ): Boolean {
         Log.d(TAG, "onScroll: $e1 $e2")
 
-        if (recordingIsActive) {
-            GestureStorage.apply {
-                if (isEmpty())
-                    addIfNotNull(UserGesture.fromScrollEvent(e1,e2))
-                else
-                    addIfNotNull(UserGesture.fromPreviousEvent(getLast(),e2))
+        /*if (recordingIsActive) {
+            gestureRecord.apply {
+                addIfNotNull(GesturePoint.fromScrollEvent(e1,e2))
             }
-
-        }
+        }*/
 
         return true
     }
