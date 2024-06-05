@@ -13,24 +13,37 @@ class MyAccessibilityService : AccessibilityService() {
         debugLog("onServiceConnected()")
         serviceInfo?.also {
             debugLog(("serviceInfo: $it"))
+            /*it.packageNames?.joinToString { "," }.also {
+                debugLog(("packageNames: $it"))
+            }*/
         }
     }
 
     override fun onInterrupt() {}
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        rootInActiveWindow?.also { rootView ->
+
+        event?.also { e ->
+            when(e.eventType) {
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> debugWindowEvent(e)
+                AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> debugWindowContentEvent(e)
+                else -> {}
+            }
+        }
+
+        /*rootInActiveWindow?.also { rootView ->
             debugLog("--------------")
             debugLog("rootView.packageName: ${rootView.packageName}, childCount: ${rootView.childCount}")
-
             showChildrenRecursively(0, rootView.getChildren())
+        }*/
+    }
 
-            /*rootView.getChildren().first { node ->
-                isBrowserWebView(node, WEB_PAGE_TITLE)
-            }.also {
-                simpleNodeInfo(it)
-            }*/
-        }
+    private fun debugWindowContentEvent(event: AccessibilityEvent) {
+
+    }
+
+    private fun debugWindowEvent(event: AccessibilityEvent) {
+        debugLog("event: $event")
     }
 
     fun isBrowserWebView(node: AccessibilityNodeInfo?, text: String): Boolean {
