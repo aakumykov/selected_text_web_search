@@ -60,7 +60,7 @@ class MyAccessibilityService : AccessibilityService() {
                 replayUserGesturesOneByOne(it)
             }*/
 
-            swipePageDown()
+            swipePageDown(3000)
         }
 
         wm.addView(layout, lp)
@@ -178,7 +178,7 @@ class MyAccessibilityService : AccessibilityService() {
     private fun createUpSwipe(duration: Long): GestureDescription {
         return GestureDescription.Builder().apply {
             addStroke(
-                StrokeDescription(swipeUpPath(),0, duration)
+                StrokeDescription(fromDownToUpPath(),0, duration)
             )
         }.build()
     }
@@ -186,19 +186,26 @@ class MyAccessibilityService : AccessibilityService() {
     private fun createDownSwipe(duration: Long): GestureDescription {
         return GestureDescription.Builder().apply {
             addStroke(
-                StrokeDescription(swipeDownPath(),0, duration)
+                StrokeDescription(fromUpToDownPath(),0, duration)
             )
         }.build()
     }
 
-    private fun swipeUpPath(): android.graphics.Path {
+    private fun fromDownToUpPath(): android.graphics.Path {
         return android.graphics.Path().apply {
             moveTo(360f, 1000f)
+            lineTo(370f, 900f)
+            lineTo(340f, 800f)
+            lineTo(300f, 700f)
+            lineTo(250f, 550f)
+            lineTo(290f, 540f)
+            lineTo(320f, 300f)
+            lineTo(300f, 210f)
             lineTo(360f, 150f)
         }
     }
 
-    private fun swipeDownPath(): android.graphics.Path {
+    private fun fromUpToDownPath(): android.graphics.Path {
         return android.graphics.Path().apply {
             moveTo(350f, 140f)
             lineTo(370f, 1010f)
