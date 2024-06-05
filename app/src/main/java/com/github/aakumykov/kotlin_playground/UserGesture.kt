@@ -1,5 +1,8 @@
 package com.github.aakumykov.kotlin_playground
 
+import android.accessibilityservice.GestureDescription
+import android.accessibilityservice.GestureDescription.StrokeDescription
+import android.graphics.Path
 import android.view.MotionEvent
 
 data class UserGesture(
@@ -10,7 +13,30 @@ data class UserGesture(
     val startDelay: Long,
     val duration: Long
 ) {
+    fun toPath(): android.graphics.Path {
+        return Path().apply {
+            moveTo(fromX, fromY)
+            lineTo(toX, toY)
+        }
+    }
+
+    fun toStrokeDescription(): StrokeDescription {
+        return GestureDescription.StrokeDescription(
+            toPath(),
+            startDelay,
+            duration
+        )
+    }
+
+    fun toGestureDescription(): GestureDescription {
+        return GestureDescription.Builder().apply {
+            addStroke(toStrokeDescription())
+        }.build()
+    }
+
+
     companion object {
+
         fun fromScrollEvent(e1: MotionEvent?, e2: MotionEvent): UserGesture? {
             return if (null != e1) {
                 UserGesture(

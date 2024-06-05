@@ -44,17 +44,43 @@ class MyAccessibilityService : AccessibilityService() {
                 }
                 else {
                     (view as Button).text = getString(R.string.stop_recording_emoji)
+                    GestureStorage.clear()
                     startRecording()
                 }
             }
 
         }
 
-        layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener { button ->
-            performSwipeDownGesture()
+        layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
+            replayUserGesturesOneByOne(GestureStorage.popFirst())
         }
 
         wm.addView(layout, lp)
+    }
+
+    private fun replayUserGesturesOneByOne(userGesture: UserGesture?) {
+
+        if (null == userGesture)
+            return
+
+        debugLog("userGesture: $userGesture")
+
+        dispatchGesture(
+            userGesture.toGestureDescription(),
+            object: GestureResultCallback() {
+                override fun onCompleted(gestureDescription: GestureDescription?) {
+                    super.onCompleted(gestureDescription)
+                    GestureStorage.popFirst()?.also {
+                        replayUserGesturesOneByOne(it)
+                    }
+                }
+
+                override fun onCancelled(gestureDescription: GestureDescription?) {
+                    super.onCancelled(gestureDescription)
+                }
+            },
+            null
+        )
     }
 
     private fun debugServiceInfo() {

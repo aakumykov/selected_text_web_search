@@ -8,9 +8,9 @@ object GestureStorage {
         userGesture?.also { deque.add(it) }
     }
 
-    fun getUserGesture(): UserGesture? = deque.firstOrNull()
-
     fun clear() = deque.clear()
 
-    fun count(): Int = deque.size
+    fun popFirst(): UserGesture? {
+        return deque.removeFirstOrNull()
+    }
 }
