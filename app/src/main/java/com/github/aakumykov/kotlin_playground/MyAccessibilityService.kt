@@ -1,6 +1,8 @@
 package com.github.aakumykov.kotlin_playground
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.GestureDescription
+import android.accessibilityservice.GestureDescription.StrokeDescription
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -61,14 +63,50 @@ class MyAccessibilityService : AccessibilityService() {
 
         if (isBrowserWebView(node, WEB_PAGE_TITLE)) {
             debugLog("Найден WebView с '${WEB_PAGE_TITLE}'")
-            node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-            node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-            node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+//            scrollDownOnNode(node)
+            makeSwipeDownGesture()
         }
 
         return with(node) {
             "className: ${className}, text: $text, desc: $contentDescription"
         }
+    }
+
+    private fun makeSwipeDownGesture() {
+        debugLog("makeSwipeDownGesture()")
+
+        dispatchGesture(
+            swipeFromUpToDownGesture(),
+            object: GestureResultCallback() {
+                override fun onCompleted(gestureDescription: GestureDescription?) {
+                    super.onCompleted(gestureDescription)
+                    debugLog("onCompleted()")
+                }
+
+                override fun onCancelled(gestureDescription: GestureDescription?) {
+                    super.onCancelled(gestureDescription)
+                    debugLog("onCancelled()")
+                }
+            },
+            null
+        )
+    }
+
+    private fun swipeFromUpToDownGesture(): GestureDescription {
+        return GestureDescription.Builder().apply {
+            addStroke(StrokeDescription(swipeDownPath(),0, 1000))
+        }.build()
+    }
+
+    private fun swipeDownPath(): android.graphics.Path {
+        return android.graphics.Path().apply {
+            moveTo(360f, 1000f)
+            lineTo(360f, 150f)
+        }
+    }
+
+    private fun scrollDownOnNode(node: AccessibilityNodeInfo?) {
+        node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
     }
 
     private fun debugLog(text: String) {
