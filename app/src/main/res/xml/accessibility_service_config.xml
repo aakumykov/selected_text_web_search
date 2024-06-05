@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--com.github.aakumykov.kotlin_playground-->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_service_description"
-    android:packageNames="com.github.aakumykov.kotlin_playground"
-    android:accessibilityEventTypes="typeGestureDetectionEnd
-    |typeGestureDetectionStart
-    |typeTouchExplorationGestureStart
-    |typeTouchExplorationGestureEnd
-    |typeTouchInteractionEnd
-    |typeTouchInteractionStart"
-    android:accessibilityFlags="flagRequestTouchExplorationMode"
-    android:accessibilityFeedbackType="feedbackSpoken"
+    android:packageNames="@null"
+    android:accessibilityEventTypes="typeWindowsChanged"
+    android:accessibilityFlags="flagDefault|flagReportViewIds|flagRetrieveInteractiveWindows"
+    android:accessibilityFeedbackType="feedbackHaptic"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
     android:settingsActivity="com.github.aakumykov.kotlin_playground.MainActivity"
+    android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
     />

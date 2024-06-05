@@ -3,10 +3,32 @@ package com.github.aakumykov.kotlin_playground
 import android.accessibilityservice.AccessibilityGestureEvent
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
+import androidx.core.os.bundleOf
 
 class MyAccessibilityService : AccessibilityService() {
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.apply {
+            when(action) {
+                ACTION_SCROLL_DOWN -> scrollDown()
+                ACTION_SCROLL_UP -> scrollUp()
+                else -> {}
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun scrollUp() {
+
+    }
+
+    private fun scrollDown() {
+
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -20,16 +42,16 @@ class MyAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event?.also { e ->
-            when(e.eventType) {
-                AccessibilityEvent.TYPE_GESTURE_DETECTION_START -> debugLog("TYPE_GESTURE_DETECTION_START")
-                AccessibilityEvent.TYPE_GESTURE_DETECTION_END ->  debugLog("TYPE_GESTURE_DETECTION_END")
-                AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START ->  debugLog("TYPE_TOUCH_EXPLORATION_GESTURE_START")
-                AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END -> debugLog("TYPE_TOUCH_EXPLORATION_GESTURE_END")
-                AccessibilityEvent.TYPE_TOUCH_INTERACTION_START -> debugLog("TYPE_TOUCH_INTERACTION_START")
-                AccessibilityEvent.TYPE_TOUCH_INTERACTION_END -> debugLog("TYPE_TOUCH_INTERACTION_END")
-                else -> {
-//                    debugLog(e.eventType.toString())
-                }
+
+            debugLog("eventType: ${e.eventType}, " +
+                    "action: ${e.action}, " +
+                    "windowId: ${e.windowId}, " +
+                    "packageName: ${e.packageName}, " +
+                    "windowChanges: ${e.windowChanges}")
+
+            e.source?.apply {
+                debugLog("packageName: ${packageName}")
+                performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, bundleOf())
             }
         }
     }
@@ -40,5 +62,7 @@ class MyAccessibilityService : AccessibilityService() {
 
     companion object {
         val TAG: String = MyAccessibilityService::class.java.simpleName
+        const val ACTION_SCROLL_DOWN: String = "ACTION_SCROLL_DOWN"
+        const val ACTION_SCROLL_UP: String = "ACTION_SCROLL_UP"
     }
 }
