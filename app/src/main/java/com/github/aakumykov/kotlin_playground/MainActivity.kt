@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.MotionEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,10 @@ import com.github.aakumykov.kotlin_playground.extensions.tag
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return super.onTouchEvent(event)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Logger.messages.observe(this) { messages -> binding.logView.text = messages.joinToString("\n") }
@@ -35,28 +40,25 @@ class MainActivity : AppCompatActivity() {
         binding.button2.setOnClickListener { action2() }
         binding.button3.setOnClickListener { action3() }
         binding.button4.setOnClickListener { action4() }
+
+        GestureStorage.lastGesture.observe(this) { s -> Logger.d(tag(), s) }
     }
 
     override fun onResume() {
         super.onResume()
-        Logger.d(tag(), "Служба доступности включена: ${checkAccess()}")
+        printASIsEnabled()
     }
 
-    private fun checkAccess(): Boolean {
+    private fun printASIsEnabled() {
+        Logger.d(tag(), "Служба доступности включена: ${isAccessibilityServiceEnabled()}")
+    }
 
-        val asName = getString(R.string.accessibilityservice_id)
-
+    private fun isAccessibilityServiceEnabled(): Boolean {
         return (getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager)
             .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
-            .let { it }
-            .any { accessibilityServiceInfo -> accessibilityServiceInfo.id.equals(asName) }
-
-        /*for (id in (getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager).getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)) {
-            if (asName == id.id) {
-                return true
+            .any { accessibilityServiceInfo ->
+                accessibilityServiceInfo.id.equals(getString(R.string.accessibilityservice_id))
             }
-        }
-        return false*/
     }
 
     override fun onDestroy() {
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun action2() {
-        showToast("Привет 2")
+        printASIsEnabled()
     }
 
     private fun action3() {
