@@ -67,8 +67,15 @@ class GestureRecordActivity : AppCompatActivity(),
     ): Boolean {
         Log.d(TAG, "onScroll: $e1 $e2")
 
-        if (recordingIsActive)
-            GestureStorage.addIfNotNull(UserGesture.fromScrollEvent(e1,e2))
+        if (recordingIsActive) {
+            GestureStorage.apply {
+                if (isEmpty())
+                    addIfNotNull(UserGesture.fromScrollEvent(e1,e2))
+                else
+                    addIfNotNull(UserGesture.fromPreviousEvent(getLast(),e2))
+            }
+
+        }
 
         return true
     }

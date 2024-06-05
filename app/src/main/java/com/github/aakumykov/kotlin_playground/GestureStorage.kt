@@ -10,7 +10,11 @@ object GestureStorage {
 
     fun clear() = deque.clear()
 
+    fun getLast(): UserGesture? = deque.lastOrNull()
+
     fun popFirst(): UserGesture? {
         return deque.removeFirstOrNull()
     }
+
+    fun isEmpty(): Boolean = (0 == deque.size)
 }

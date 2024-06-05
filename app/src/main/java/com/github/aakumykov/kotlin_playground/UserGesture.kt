@@ -11,17 +11,18 @@ data class UserGesture(
     val toX: Float,
     val toY: Float,
     val startDelay: Long,
-    val duration: Long
+    val duration: Long,
+    val endingEventTime: Long
 ) {
-    fun toPath(): android.graphics.Path {
+    private fun toPath(): Path {
         return Path().apply {
             moveTo(fromX, fromY)
             lineTo(toX, toY)
         }
     }
 
-    fun toStrokeDescription(): StrokeDescription {
-        return GestureDescription.StrokeDescription(
+    private fun toStrokeDescription(): StrokeDescription {
+        return StrokeDescription(
             toPath(),
             startDelay,
             duration
@@ -45,12 +46,26 @@ data class UserGesture(
                     toX = e2.rawX,
                     toY = e2.rawY,
                     startDelay = 0L,
-                    duration = e2.eventTime - e2.downTime
+                    duration = e2.eventTime - e2.downTime,
+                    endingEventTime = e2.eventTime
                 )
             }
             else {
                 null
             }
+        }
+
+        fun fromPreviousEvent(prev: UserGesture?, e2: MotionEvent): UserGesture? {
+            if (null == prev) return null
+            return UserGesture(
+                fromX = prev.toX,
+                fromY = prev.toY,
+                toX = e2.rawX,
+                toY = e2.rawY,
+                startDelay = 0L,
+                duration = e2.eventTime - prev.endingEventTime,
+                endingEventTime = e2.eventTime
+            )
         }
     }
 }
