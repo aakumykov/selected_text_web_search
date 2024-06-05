@@ -2,56 +2,84 @@ package com.github.aakumykov.kotlin_playground
 
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.github.aakumykov.kotlin_playground.databinding.ActivityGestureRecordBinding
+import androidx.core.view.GestureDetectorCompat
 
-class GestureRecordActivity : AppCompatActivity() {
+class GestureRecordActivity : AppCompatActivity(),
+    GestureDetector.OnGestureListener,
+    GestureDetector.OnDoubleTapListener {
 
-    private lateinit var binding: ActivityGestureRecordBinding
+    private lateinit var mDetector: GestureDetectorCompat
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_gesture_record)
 
-        perpareLayout()
+        mDetector = GestureDetectorCompat(this, this)
+        mDetector.setOnDoubleTapListener(this)
+    }
 
-        binding.main.setOnTouchListener { v, motionEvent ->
-
-            when(motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> debugMotionEvent("ACTION_DOWN", motionEvent)
-                MotionEvent.ACTION_POINTER_DOWN -> debugMotionEvent("ACTION_POINTER_DOWN", motionEvent)
-
-                MotionEvent.ACTION_UP -> debugMotionEvent("ACTION_UP", motionEvent)
-                MotionEvent.ACTION_POINTER_UP -> debugMotionEvent("ACTION_POINTER_UP", motionEvent)
-
-                MotionEvent.ACTION_MOVE -> debugMotionEvent("ACTION_MOVE", motionEvent)
-            }
-
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return if (mDetector.onTouchEvent(event)) {
             true
+        } else {
+            super.onTouchEvent(event)
         }
     }
 
-    private fun debugMotionEvent(action: String, e: MotionEvent) {
-        val downTime = e.downTime
-        val eventTime = e.eventTime
-        val timeDiff = eventTime - downTime
-        Log.d(TAG,
-            "$action, x: ${e.rawX}, y: ${e.rawY}, eventTime: ${eventTime}, downTime: ${downTime}, diff: $timeDiff"
-        )
+    override fun onDown(event: MotionEvent): Boolean {
+        Log.d(TAG, "onDown: $event")
+        return true
     }
 
-    private fun perpareLayout() {
-        binding = ActivityGestureRecordBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onLongPress(event: MotionEvent) {
+        Log.d(TAG, "onLongPress: $event")
+    }
+
+    override fun onFling(
+        e1: MotionEvent?,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        Log.d(TAG, "onFling: $e1 $e2")
+        return true
+    }
+
+    override fun onShowPress(event: MotionEvent) {
+        Log.d(TAG, "onShowPress: $event")
+    }
+
+    override fun onSingleTapUp(event: MotionEvent): Boolean {
+        Log.d(TAG, "onSingleTapUp: $event")
+        return true
+    }
+
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        Log.d(TAG, "onScroll: $e1 $e2")
+        return true
+    }
+
+    override fun onDoubleTap(event: MotionEvent): Boolean {
+        Log.d(TAG, "onDoubleTap: $event")
+        return true
+    }
+
+    override fun onDoubleTapEvent(event: MotionEvent): Boolean {
+        Log.d(TAG, "onDoubleTapEvent: $event")
+        return true
+    }
+
+    override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+        Log.d(TAG, "onSingleTapConfirmed: $event")
+        return true
     }
 
     companion object {
