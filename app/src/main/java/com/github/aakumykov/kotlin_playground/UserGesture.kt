@@ -10,7 +10,7 @@ data class UserGesture(
     val fromY: Float,
     val toX: Float,
     val toY: Float,
-    val startDelay: Long,
+    @Deprecated("Убрать?") val startDelay: Long,
     val duration: Long,
     val endingEventTime: Long
 ) {
