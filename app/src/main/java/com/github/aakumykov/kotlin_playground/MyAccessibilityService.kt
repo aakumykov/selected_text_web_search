@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
-import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 
 class MyAccessibilityService : AccessibilityService() {
@@ -37,7 +36,21 @@ class MyAccessibilityService : AccessibilityService() {
         val inflater = LayoutInflater.from(this)
         inflater.inflate(R.layout.service_controls_layout, layout)
 
-        layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
+        layout.findViewById<Button>(R.id.buttonRecordGestures).setOnClickListener { view ->
+            GestureRecordActivity.apply {
+                if (isRecordingNow()) {
+                    (view as Button).text = getString(R.string.start_recording_emoji)
+                    stopRecording()
+                }
+                else {
+                    (view as Button).text = getString(R.string.stop_recording_emoji)
+                    startRecording()
+                }
+            }
+
+        }
+
+        layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener { button ->
             performSwipeDownGesture()
         }
 

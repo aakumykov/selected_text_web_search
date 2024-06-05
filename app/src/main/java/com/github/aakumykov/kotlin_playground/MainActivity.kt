@@ -1,5 +1,6 @@
 package com.github.aakumykov.kotlin_playground
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -41,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         binding.button3.setOnClickListener { action3() }
         binding.button4.setOnClickListener { action4() }
 
-        GestureStorage.lastGesture.observe(this) { s -> Logger.d(tag(), s) }
 
         if (!isAccessibilityServiceEnabled())
             openAccessibilitySettings()
@@ -56,14 +56,6 @@ class MainActivity : AppCompatActivity() {
         Logger.d(tag(), "Служба доступности включена: ${isAccessibilityServiceEnabled()}")
     }
 
-    private fun isAccessibilityServiceEnabled(): Boolean {
-        return (getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager)
-            .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
-            .any { accessibilityServiceInfo ->
-                accessibilityServiceInfo.id.equals(getString(R.string.accessibilityservice_id))
-            }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         Logger.d(TAG, "onDestroy()")
@@ -71,10 +63,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun action1() {
         openAccessibilitySettings()
-    }
-
-    private fun openAccessibilitySettings() {
-        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
     }
 
     private fun action2() {
@@ -87,12 +75,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun action4() {
         showToast("Привет 4")
-    }
-
-    private fun showAppProperties() {
-        val uri = Uri.parse("package:$packageName")
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
-        if (intent.resolveActivity(packageManager) != null) { startActivity(intent) }
     }
 
     companion object {

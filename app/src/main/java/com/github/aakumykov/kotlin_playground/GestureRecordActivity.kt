@@ -19,6 +19,8 @@ class GestureRecordActivity : AppCompatActivity(),
 
         mDetector = GestureDetectorCompat(this, this)
         mDetector.setOnDoubleTapListener(this)
+
+        openAccessibilitySettingsIfDisabled()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -64,6 +66,10 @@ class GestureRecordActivity : AppCompatActivity(),
         distanceY: Float
     ): Boolean {
         Log.d(TAG, "onScroll: $e1 $e2")
+
+        if (recordingIsActive)
+            GestureStorage.addIfNotNull(UserGesture.fromScrollEvent(e1,e2))
+
         return true
     }
 
@@ -84,5 +90,13 @@ class GestureRecordActivity : AppCompatActivity(),
 
     companion object {
         val TAG: String = GestureRecordActivity::class.java.simpleName
+
+        private var recordingIsActive: Boolean = false
+
+        fun startRecording() { recordingIsActive = true }
+
+        fun stopRecording() { recordingIsActive = false }
+
+        fun isRecordingNow() = recordingIsActive
     }
 }

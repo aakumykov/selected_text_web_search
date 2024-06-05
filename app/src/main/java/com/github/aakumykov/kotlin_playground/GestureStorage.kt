@@ -1,14 +1,16 @@
 package com.github.aakumykov.kotlin_playground
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-
 object GestureStorage {
 
-    private val _lastGesture: MutableLiveData<String> = MutableLiveData()
-    val lastGesture: LiveData<String> = _lastGesture
+    private val deque: ArrayDeque<UserGesture> = ArrayDeque(5)
 
-    fun addGesture(g: String) {
-        _lastGesture.postValue(g)
+    fun addIfNotNull(userGesture: UserGesture?) {
+        userGesture?.also { deque.add(it) }
     }
+
+    fun getUserGesture(): UserGesture? = deque.firstOrNull()
+
+    fun clear() = deque.clear()
+
+    fun count(): Int = deque.size
 }
