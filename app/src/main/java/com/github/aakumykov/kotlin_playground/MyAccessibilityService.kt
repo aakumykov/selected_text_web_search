@@ -34,7 +34,7 @@ class MyAccessibilityService : AccessibilityService() {
     fun isBrowserWebView(node: AccessibilityNodeInfo?, text: String): Boolean {
         return node?.let {
             "android.webkit.WebView" == it.className
-                    && (it.text?.let { t -> t.equals(text) } ?: false)
+                    /*&& (it.text?.let { t -> !t.equals(text) } ?: false)*/
         } ?: false
     }
 
@@ -61,6 +61,8 @@ class MyAccessibilityService : AccessibilityService() {
 
         if (isBrowserWebView(node, WEB_PAGE_TITLE)) {
             debugLog("Найден WebView с '${WEB_PAGE_TITLE}'")
+            node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+            node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
             node?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
         }
 
