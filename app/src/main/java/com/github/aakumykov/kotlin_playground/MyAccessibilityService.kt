@@ -13,7 +13,6 @@ class MyAccessibilityService : AccessibilityService() {
         debugLog("onServiceConnected()")
         serviceInfo?.also {
             debugLog(("serviceInfo: $it"))
-            it.flags = AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE
         }
     }
 
@@ -33,19 +32,6 @@ class MyAccessibilityService : AccessibilityService() {
                 }
             }
         }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onGesture(gestureId: Int): Boolean {
-        debugLog("onGesture(${gestureId})")
-        GestureStorage.addGesture("gestureId: $gestureId")
-        return super.onGesture(gestureId)
-    }
-
-    override fun onGesture(gestureEvent: AccessibilityGestureEvent): Boolean {
-        debugLog("onGesture(${gestureEvent.motionEvents.size})")
-        GestureStorage.addGesture("gestureEvent: ${gestureEvent.gestureId}")
-        return super.onGesture(gestureEvent)
     }
 
     private fun debugLog(text: String) {

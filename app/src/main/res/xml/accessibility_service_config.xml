@@ -12,6 +12,5 @@
     android:accessibilityFeedbackType="feedbackSpoken"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
-    android:canRequestTouchExplorationMode="true"
     android:settingsActivity="com.github.aakumykov.kotlin_playground.MainActivity"
     />
