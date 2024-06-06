@@ -32,6 +32,14 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    packagingOptions {
+        jniLibs {
+            excludes += ['META-INF/*', 'META-INF/licenses/*']
+        }
+        resources {
+            excludes += ['META-INF/*', 'META-INF/licenses/*', '**/attach_hotspot_windows.dll']
+        }
+    }
 }
 
 dependencies {
