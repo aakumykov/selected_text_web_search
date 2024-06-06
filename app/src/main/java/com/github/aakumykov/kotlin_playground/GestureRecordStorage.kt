@@ -1,6 +1,6 @@
 package com.github.aakumykov.kotlin_playground
 
-object GestureRecordsStorage {
+object GestureRecordStorage {
 
     private val recordsList: MutableList<GestureRecord> = ArrayList()
 
@@ -8,8 +8,8 @@ object GestureRecordsStorage {
         gestureRecord?.also { recordsList.add(it) }
     }
 
-    fun getFirst(): GestureRecord? {
-        return recordsList.firstOrNull()
+    fun popFirst(): GestureRecord? {
+        return recordsList.removeFirstOrNull()
     }
 
     fun clearAllRecords() {

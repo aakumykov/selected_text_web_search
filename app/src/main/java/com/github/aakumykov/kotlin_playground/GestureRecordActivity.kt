@@ -55,7 +55,7 @@ class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
         endingTime = event.eventTime
 
         if (null != startingTime)
-            GestureRecordsStorage.addRecordIfNotNull(
+            GestureRecordStorage.addRecordIfNotNull(
                 GestureRecord.create(pointList, startingTime!!, endingTime!!)
             )
 

@@ -56,7 +56,7 @@ class MyAccessibilityService : AccessibilityService() {
 
         layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
 
-            replayUserGesturesOneByOne(GestureRecordsStorage.getFirst())
+            replayUserGesturesOneByOne(GestureRecordStorage.popFirst())
 
             /*UserGestureSimplifier(GestureStorage.getAll()).simplifyMax().also {
                 replayUserGesturesOneByOne(it)
@@ -66,7 +66,7 @@ class MyAccessibilityService : AccessibilityService() {
         }
 
         layout.findViewById<Button>(R.id.buttonClearRecords).setOnClickListener {
-            GestureRecordsStorage.clearAllRecords()
+            GestureRecordStorage.clearAllRecords()
         }
 
         wm.addView(layout, lp)
@@ -84,9 +84,9 @@ class MyAccessibilityService : AccessibilityService() {
                 object: GestureResultCallback() {
                     override fun onCompleted(gestureDescription: GestureDescription?) {
                         super.onCompleted(gestureDescription)
-                        /*GestureStorage.popFirst()?.also {
+                        GestureRecordStorage.popFirst()?.also {
                             replayUserGesturesOneByOne(it)
-                        }*/
+                        }
                     }
 
                     override fun onCancelled(gestureDescription: GestureDescription?) {
