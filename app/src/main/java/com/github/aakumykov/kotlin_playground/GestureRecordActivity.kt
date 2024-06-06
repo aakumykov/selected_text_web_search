@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
 
-    private var startingEvent: MotionEvent? = null
-    private var currentRecord: GestureRecord = GestureRecord()
+    private var initialEvent: MotionEvent? = null
+    private var pointList: MutableList<GesturePoint> = ArrayList()
+    private var startingTime: Long? = null
+    private var endingTime: Long? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,27 +24,56 @@ class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        Log.d(TAG, "motionEvent: $event")
+//        Log.d(TAG, "motionEvent: $event")
         when(event?.action) {
-            MotionEvent.ACTION_DOWN -> startingEvent = event
+            MotionEvent.ACTION_DOWN -> startRecording(event)
             MotionEvent.ACTION_MOVE -> recordEvent(event)
             MotionEvent.ACTION_UP -> finishRecording(event)
+            MotionEvent.ACTION_CANCEL -> cancelRecording()
+            MotionEvent.ACTION_OUTSIDE -> { Toast.makeText(this, "ACTION_OUTSIDE", Toast.LENGTH_SHORT).show() }
             else -> {}
         }
         return true
     }
 
-    private fun finishRecording(event: MotionEvent) {
-        recordEvent(event)
-        GestureRecordsStorage.addRecord(currentRecord)
-        startingEvent = null
+    private fun startRecording(event: MotionEvent) {
+        Log.d(TAG, "startRecording(), $event")
+        eraseRecordingData()
+        startingTime = event.eventTime
+        initialEvent = event
     }
 
     private fun recordEvent(event: MotionEvent) {
-        /*if (null == startingEvent)
-            startingEvent = event
-        else*/
-            currentRecord.addIfNotNull(GesturePoint.fromMotionEvent(startingEvent, event))
+        Log.d(TAG, "recordEvent(), $event")
+        storeMotionEvent(event)
+    }
+
+    private fun finishRecording(event: MotionEvent) {
+        Log.d(TAG, "finishRecording(), $event")
+        storeMotionEvent(event)
+        endingTime = event.eventTime
+
+        if (null != startingTime)
+            GestureRecordsStorage.addRecord(GestureRecord.create(pointList,startingTime!!,endingTime!!))
+
+        eraseRecordingData()
+    }
+
+    private fun cancelRecording() {
+        eraseRecordingData()
+    }
+
+    private fun storeMotionEvent(event: MotionEvent) {
+        initialEvent?.also {
+            pointList.add(GesturePoint.fromMotionEvent(it, event))
+        }
+    }
+
+    private fun eraseRecordingData() {
+        startingTime = null
+        endingTime = null
+        initialEvent = null
+        pointList.clear()
     }
 
     companion object {
@@ -49,10 +81,10 @@ class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
 
         private var recordingIsActive: Boolean = false
 
-        fun startRecording() { recordingIsActive = true }
+        fun activateRecordingState() { recordingIsActive = true }
 
-        fun stopRecording() { recordingIsActive = false }
+        fun deactivateRecordingState() { recordingIsActive = false }
 
-        fun isRecordingNow() = recordingIsActive
+        fun isRecordingState() = recordingIsActive
     }
 }

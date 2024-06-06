@@ -3,27 +3,24 @@ package com.github.aakumykov.kotlin_playground
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
 
-class GestureRecord {
-
-    private var _pointList: MutableList<GesturePoint> = ArrayList()
-
-    fun addIfNotNull(gesturePoint: GesturePoint?) {
-        gesturePoint?.also { _pointList.add(it) }
-    }
-
-    fun createGestureDescription(duration: Long = 1000): GestureDescription {
+class GestureRecord private constructor(
+    private val pointList: List<GesturePoint>,
+    private val startingTime: Long,
+    private val endingTime: Long
+) {
+    fun createGestureDescription(): GestureDescription {
         return GestureDescription.Builder().apply {
-            addStroke(createStrokeDescription(duration))
+            addStroke(createStrokeDescription())
         }.build()
     }
 
     private fun createPath(): Path {
         return Path().apply {
-            _pointList.firstOrNull()?.also {
+            pointList.firstOrNull()?.also {
                 moveTo(it.fromX, it.fromY)
             }
-            if (_pointList.size>1) {
-                _pointList.subList(1, _pointList.lastIndex).also { sublist ->
+            if (pointList.size>1) {
+                pointList.subList(1, pointList.lastIndex).also { sublist ->
                     sublist.forEach { gp ->
                         lineTo(gp.toX, gp.toY)
                     }
@@ -31,11 +28,17 @@ class GestureRecord {
         }
     }
 
-    private fun createStrokeDescription(duration: Long): GestureDescription.StrokeDescription {
+    private fun createStrokeDescription(): GestureDescription.StrokeDescription {
         return GestureDescription.StrokeDescription(
             createPath(),
             0L,
-            duration
+            endingTime - startingTime
         )
+    }
+
+    companion object {
+        fun create(pointList: List<GesturePoint>, startingTime: Long, endingTime: Long): GestureRecord {
+            return GestureRecord(pointList, startingTime, endingTime)
+        }
     }
 }

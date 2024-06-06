@@ -39,14 +39,14 @@ class MyAccessibilityService : AccessibilityService() {
 
         layout.findViewById<Button>(R.id.buttonRecordGestures).setOnClickListener { view ->
             GestureRecordActivity.apply {
-                if (isRecordingNow()) {
+                if (isRecordingState()) {
                     (view as Button).text = getString(R.string.start_recording_emoji)
-                    stopRecording()
+                    deactivateRecordingState()
                 }
                 else {
                     (view as Button).text = getString(R.string.stop_recording_emoji)
 //                    GestureStorage.clear()
-                    startRecording()
+                    activateRecordingState()
                 }
             }
 

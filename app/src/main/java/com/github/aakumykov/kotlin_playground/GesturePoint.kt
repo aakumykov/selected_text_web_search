@@ -9,8 +9,7 @@ data class GesturePoint(
     val toY: Float,
 ) {
     companion object {
-        fun fromMotionEvent(e1: MotionEvent?, e2: MotionEvent): GesturePoint? {
-            if (null == e1) return null
+        fun fromMotionEvent(e1: MotionEvent, e2: MotionEvent): GesturePoint {
             return GesturePoint(
                 fromX = e1.rawX,
                 fromY = e1.rawY,
