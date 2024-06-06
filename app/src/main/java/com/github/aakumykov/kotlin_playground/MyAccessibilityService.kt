@@ -18,10 +18,11 @@ class MyAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         debugLog("onServiceConnected()")
         debugServiceInfo()
-        showControlButtons()
+        addControlButtons()
     }
 
-    private fun showControlButtons() {
+    private fun addControlButtons() {
+
         val wm = getSystemService(WINDOW_SERVICE) as WindowManager
         val layout = ConstraintLayout(this)
         val lp = WindowManager.LayoutParams().apply {
@@ -37,50 +38,52 @@ class MyAccessibilityService : AccessibilityService() {
         inflater.inflate(R.layout.service_controls_layout, layout)
 
         layout.findViewById<Button>(R.id.buttonRecordGestures).setOnClickListener { view ->
-            /*GestureRecordActivity.apply {
+            GestureRecordActivity.apply {
                 if (isRecordingNow()) {
                     (view as Button).text = getString(R.string.start_recording_emoji)
                     stopRecording()
                 }
                 else {
                     (view as Button).text = getString(R.string.stop_recording_emoji)
-                    GestureStorage.clear()
+//                    GestureStorage.clear()
                     startRecording()
                 }
-            }*/
+            }
 
-            swipePageUp()
+//            swipePageUp()
         }
 
         layout.findViewById<Button>(R.id.buttonReplayGestures).setOnClickListener {
 
-//            replayUserGesturesOneByOne(GestureStorage.popFirst())
+            replayUserGesturesOneByOne(GestureRecordsStorage.getFirst())
 
             /*UserGestureSimplifier(GestureStorage.getAll()).simplifyMax().also {
                 replayUserGesturesOneByOne(it)
             }*/
 
-            swipePageDown(3000)
+//            swipePageDown(3000)
+        }
+
+        layout.findViewById<Button>(R.id.buttonClearRecords).setOnClickListener {
+            GestureRecordsStorage.clearAllRecords()
         }
 
         wm.addView(layout, lp)
     }
 
-    private fun replayUserGesturesOneByOne(gesturePoint: GesturePoint?) {
+    private fun replayUserGesturesOneByOne(gestureRecord: GestureRecord?) {
 
-        if (null == gesturePoint)
+        if (null == gestureRecord)
             return
 
-        debugLog("userGesture: $gesturePoint")
-
-        /*dispatchGesture(
-            gesturePoint.toGestureDescription(2000),
+        dispatchGesture(
+            gestureRecord.createGestureDescription(),
             object: GestureResultCallback() {
                 override fun onCompleted(gestureDescription: GestureDescription?) {
                     super.onCompleted(gestureDescription)
-                    GestureRecord.popFirst()?.also {
+                    /*GestureStorage.popFirst()?.also {
                         replayUserGesturesOneByOne(it)
-                    }
+                    }*/
                 }
 
                 override fun onCancelled(gestureDescription: GestureDescription?) {
@@ -88,7 +91,7 @@ class MyAccessibilityService : AccessibilityService() {
                 }
             },
             null
-        )*/
+        )
     }
 
     private fun debugServiceInfo() {

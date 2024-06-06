@@ -18,9 +18,19 @@
         android:id="@+id/buttonReplayGestures"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonClearRecords"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonRecordGestures"
         android:text="@string/replay_gestures" />
+
+    <Button
+        android:id="@+id/buttonClearRecords"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonReplayGestures"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:text="@string/start_clear_records" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

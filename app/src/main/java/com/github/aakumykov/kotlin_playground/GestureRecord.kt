@@ -2,8 +2,6 @@ package com.github.aakumykov.kotlin_playground
 
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
-import android.util.Log
-import com.github.aakumykov.kotlin_playground.extensions.tag
 
 class GestureRecord {
 
@@ -11,6 +9,12 @@ class GestureRecord {
 
     fun addIfNotNull(gesturePoint: GesturePoint?) {
         gesturePoint?.also { _pointList.add(it) }
+    }
+
+    fun createGestureDescription(duration: Long = 1000): GestureDescription {
+        return GestureDescription.Builder().apply {
+            addStroke(createStrokeDescription(duration))
+        }.build()
     }
 
     private fun createPath(): Path {
@@ -33,11 +37,5 @@ class GestureRecord {
             0L,
             duration
         )
-    }
-
-    fun createGestureDescription(duration: Long = 1000): GestureDescription {
-        return GestureDescription.Builder().apply {
-            addStroke(createStrokeDescription(duration))
-        }.build()
     }
 }

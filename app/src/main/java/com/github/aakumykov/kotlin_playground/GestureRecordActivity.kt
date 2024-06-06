@@ -2,94 +2,46 @@ package com.github.aakumykov.kotlin_playground
 
 import android.os.Bundle
 import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GestureDetectorCompat
 
-class GestureRecordActivity : AppCompatActivity(),
-    GestureDetector.OnGestureListener,
-    GestureDetector.OnDoubleTapListener {
+class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
 
-    private lateinit var mDetector: GestureDetectorCompat
-    private var gestureRecord: GestureRecord = GestureRecord()
+    private var startingEvent: MotionEvent? = null
+    private var currentRecord: GestureRecord = GestureRecord()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gesture_record)
 
-        mDetector = GestureDetectorCompat(this, this)
-        mDetector.setOnDoubleTapListener(this)
+        findViewById<View>(R.id.main).setOnTouchListener(this)
 
         openAccessibilitySettingsIfDisabled()
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        return if (mDetector.onTouchEvent(event)) {
-            true
-        } else {
-            super.onTouchEvent(event)
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        Log.d(TAG, "motionEvent: $event")
+        when(event?.action) {
+            MotionEvent.ACTION_DOWN -> startingEvent = event
+            MotionEvent.ACTION_MOVE -> recordEvent(event)
+            MotionEvent.ACTION_UP -> finishRecording(event)
+            else -> {}
         }
-    }
-
-    override fun onDown(event: MotionEvent): Boolean {
-        Log.d(TAG, "onDown: $event")
         return true
     }
 
-    override fun onLongPress(event: MotionEvent) {
-        Log.d(TAG, "onLongPress: $event")
+    private fun finishRecording(event: MotionEvent) {
+        recordEvent(event)
+        GestureRecordsStorage.addRecord(currentRecord)
+        startingEvent = null
     }
 
-    override fun onFling(
-        e1: MotionEvent?,
-        e2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
-        Log.d(TAG, "onFling: $e1 $e2")
-        return true
-    }
-
-    override fun onShowPress(event: MotionEvent) {
-        Log.d(TAG, "onShowPress: $event")
-    }
-
-    override fun onSingleTapUp(event: MotionEvent): Boolean {
-        Log.d(TAG, "onSingleTapUp: $event")
-        return true
-    }
-
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        Log.d(TAG, "onScroll: $e1 $e2")
-
-        /*if (recordingIsActive) {
-            gestureRecord.apply {
-                addIfNotNull(GesturePoint.fromScrollEvent(e1,e2))
-            }
-        }*/
-
-        return true
-    }
-
-    override fun onDoubleTap(event: MotionEvent): Boolean {
-        Log.d(TAG, "onDoubleTap: $event")
-        return true
-    }
-
-    override fun onDoubleTapEvent(event: MotionEvent): Boolean {
-        Log.d(TAG, "onDoubleTapEvent: $event")
-        return true
-    }
-
-    override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-        Log.d(TAG, "onSingleTapConfirmed: $event")
-        return true
+    private fun recordEvent(event: MotionEvent) {
+        /*if (null == startingEvent)
+            startingEvent = event
+        else*/
+            currentRecord.addIfNotNull(GesturePoint.fromMotionEvent(startingEvent, event))
     }
 
     companion object {
