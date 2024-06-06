@@ -50,11 +50,14 @@ class GestureRecordActivity : AppCompatActivity(), View.OnTouchListener {
 
     private fun finishRecording(event: MotionEvent) {
         Log.d(TAG, "finishRecording(), $event")
+
         storeMotionEvent(event)
         endingTime = event.eventTime
 
         if (null != startingTime)
-            GestureRecordsStorage.addRecord(GestureRecord.create(pointList,startingTime!!,endingTime!!))
+            GestureRecordsStorage.addRecordIfNotNull(
+                GestureRecord.create(pointList, startingTime!!, endingTime!!)
+            )
 
         eraseRecordingData()
     }

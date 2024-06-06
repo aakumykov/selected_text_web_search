@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.accessibilityservice.GestureDescription.StrokeDescription
 import android.graphics.PixelFormat
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -76,22 +77,27 @@ class MyAccessibilityService : AccessibilityService() {
         if (null == gestureRecord)
             return
 
-        dispatchGesture(
-            gestureRecord.createGestureDescription(),
-            object: GestureResultCallback() {
-                override fun onCompleted(gestureDescription: GestureDescription?) {
-                    super.onCompleted(gestureDescription)
-                    /*GestureStorage.popFirst()?.also {
-                        replayUserGesturesOneByOne(it)
-                    }*/
-                }
+        gestureRecord.createGestureDescription()?.also { gestureDescription ->
 
-                override fun onCancelled(gestureDescription: GestureDescription?) {
-                    super.onCancelled(gestureDescription)
-                }
-            },
-            null
-        )
+            dispatchGesture(
+                gestureDescription,
+                object: GestureResultCallback() {
+                    override fun onCompleted(gestureDescription: GestureDescription?) {
+                        super.onCompleted(gestureDescription)
+                        /*GestureStorage.popFirst()?.also {
+                            replayUserGesturesOneByOne(it)
+                        }*/
+                    }
+
+                    override fun onCancelled(gestureDescription: GestureDescription?) {
+                        super.onCancelled(gestureDescription)
+                    }
+                },
+                null
+            )
+        } ?: {
+            Log.e(TAG, "GestureDescription is null")
+        }
     }
 
     private fun debugServiceInfo() {

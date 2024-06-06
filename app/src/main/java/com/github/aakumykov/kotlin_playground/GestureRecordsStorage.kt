@@ -4,8 +4,8 @@ object GestureRecordsStorage {
 
     private val recordsList: MutableList<GestureRecord> = ArrayList()
 
-    fun addRecord(gestureRecord: GestureRecord) {
-        recordsList.add(gestureRecord)
+    fun addRecordIfNotNull(gestureRecord: GestureRecord?) {
+        gestureRecord?.also { recordsList.add(it) }
     }
 
     fun getFirst(): GestureRecord? {
