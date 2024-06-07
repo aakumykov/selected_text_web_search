@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.github.aakumykov.ktor_server.databinding.ActivityServerBinding
+import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.websocket.wss
@@ -21,10 +22,13 @@ import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
 
 class ServerActivity : AppCompatActivity() {
 
@@ -59,6 +63,7 @@ class ServerActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch(Dispatchers.IO){
+
             client.webSocket(
                 method = HttpMethod.Get,
                 host = localIpAddress,
@@ -67,10 +72,19 @@ class ServerActivity : AppCompatActivity() {
             ) {
                 Log.d(TAG, "Слиент соединился с сервером. Сессия: $this")
 
-                incoming.receive().also { frame ->
-                    (frame as? Frame.Text)?.also { textFrame ->
-                        Log.d(TAG, "Получен ответ: "+textFrame.readText())
+//                isActive
+
+                try {
+                    incoming.receive()
+                        .also { frame ->
+                        (frame as? Frame.Text)?.also { textFrame ->
+                            Log.d(TAG, "Получен ответ: " + textFrame.readText())
+                        }
                     }
+                } catch (e: ClosedReceiveChannelException) {
+                    Log.e(TAG, ExceptionUtils.getErrorMessage(e))
+                } catch (e: CancellationException) {
+                    Log.e(TAG, ExceptionUtils.getErrorMessage(e))
                 }
 
                 send("Привет!")
