@@ -95,8 +95,11 @@ class KtorService : Service() {
                 Jetty,
                 port = serverPort,
                 host = localIpAddress,
-                module = Application::module
-            ).start(wait = true) // TODO: попробовать wait = false
+            ) {
+                configureWebsockets(KTOR_WEBSOCKET_SERVER_TAG, ":-)")
+                configureHttpRouting()
+            }
+                .start(wait = true) // TODO: попробовать wait = false
         }
     }
 
@@ -111,9 +114,4 @@ class KtorService : Service() {
     class Binder(val service: KtorService): android.os.Binder()
 }
 
-const val KTOR_SERVER_TAG: String = "KTOR_SERVER"
-
-fun Application.module() {
-    configureWebsockets(KTOR_SERVER_TAG)
-    configureHttpRouting()
-}
+const val KTOR_WEBSOCKET_SERVER_TAG: String = "KTOR_SERVER"
