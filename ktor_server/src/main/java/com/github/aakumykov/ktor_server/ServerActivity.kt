@@ -30,6 +30,7 @@ class ServerActivity : AppCompatActivity(), ServiceConnection {
         prepareLayout()
         binding.startServiceButton.setOnClickListener { startKtorService() }
         binding.stopServiceButton.setOnClickListener { stopKtorService() }
+        startKtorService()
     }
 
     private fun startKtorService() {
