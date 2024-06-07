@@ -2,7 +2,9 @@ package com.github.aakumykov.ktor_server
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Telephony.Carriers.PORT
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,6 @@ import com.github.aakumykov.ktor_server.databinding.ActivityServerBinding
 import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.http.HttpMethod
@@ -22,10 +23,11 @@ import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.cancellation.CancellationException
@@ -33,14 +35,37 @@ import kotlin.coroutines.cancellation.CancellationException
 class ServerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityServerBinding
-    private val ktorServiceIntent: Intent by lazy { Intent(this, KtorService::class.java) }
+
+    private val ktorServiceIntent: Intent by lazy {
+        Intent(this, KtorService::class.java).apply {
+            putExtra(EXTRAS_SERVER_IP_ADDRESS, serverIpAddress)
+            putExtra(PORT, serverPort)
+        }
+    }
+
+    private val serverIpAddress: String get() {
+        return serverAddressParts.let { addressParts ->
+            return@let if (addressParts?.size == 2) addressParts.first()
+            else DEFAULT_SERVER_IP
+        }
+    }
+
+    private val serverPort: Int get() {
+        return serverAddressParts.let { addressParts ->
+            return@let if (addressParts?.size == 2) addressParts.last().toInt()
+            else DEFAULT_SERVER_PORT
+        }
+    }
+
+    private val serverAddressParts: List<String>? get() = binding.serverAddressInput.text?.split(":")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         prepareLayout()
         displayIpAddress()
-        startKtorService()
+//        startKtorService()
 
         binding.startServiceButton.setOnClickListener { startKtorService() }
         binding.stopServiceButton.setOnClickListener { stopKtorService() }
@@ -48,7 +73,7 @@ class ServerActivity : AppCompatActivity() {
     }
 
     private fun displayIpAddress() {
-        binding.ipAddressView.text = localIpAddress
+        binding.serverAddressInput.setText("${localIpAddress}:${DEFAULT_SERVER_PORT}")
     }
 
     private fun connectToWebsocketServer() {
@@ -64,41 +89,67 @@ class ServerActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO){
 
-            client.webSocket(
-                method = HttpMethod.Get,
-                host = localIpAddress,
-                port = serverPort,
-                path = "/chat"
-            ) {
-                Log.d(TAG, "Слиент соединился с сервером. Сессия: $this")
+            inMainThread { hideError() }
+
+            try {
+
+                client.webSocket(
+                    method = HttpMethod.Get,
+                    host = serverIpAddress,
+                    port = serverPort,
+                    path = "/chat"
+                ) {
+                    Log.d(TAG, "Слиент соединился с сервером. Сессия: $this")
 
 //                isActive
 
-                try {
-                    incoming.receive()
-                        .also { frame ->
+                    try {
+                        incoming.receive()
+                            .also { frame ->
+                                (frame as? Frame.Text)?.also { textFrame ->
+                                    Log.d(TAG, "Получен ответ: " + textFrame.readText())
+                                }
+                            }
+                    } catch (e: ClosedReceiveChannelException) {
+                        Log.e(TAG, ExceptionUtils.getErrorMessage(e))
+                    } catch (e: CancellationException) {
+                        Log.e(TAG, ExceptionUtils.getErrorMessage(e))
+                    }
+
+                    send("Привет!")
+
+                    incoming.receive().also { frame ->
                         (frame as? Frame.Text)?.also { textFrame ->
                             Log.d(TAG, "Получен ответ: " + textFrame.readText())
                         }
                     }
-                } catch (e: ClosedReceiveChannelException) {
-                    Log.e(TAG, ExceptionUtils.getErrorMessage(e))
-                } catch (e: CancellationException) {
-                    Log.e(TAG, ExceptionUtils.getErrorMessage(e))
+
+                    delay(10000)
+                    Log.d(TAG, "Слиент отключается от сервера.")
+                    close()
                 }
 
-                send("Привет!")
-
-                incoming.receive().also { frame ->
-                    (frame as? Frame.Text)?.also { textFrame ->
-                        Log.d(TAG, "Получен ответ: "+textFrame.readText())
-                    }
-                }
-
-                delay(10000)
-                Log.d(TAG, "Слиент отключается от сервера.")
-                close()
+            } catch (e: Exception) {
+                inMainThread { showError(e) }
             }
+        }
+    }
+
+    private suspend fun inMainThread(block: () -> Unit) {
+        withContext(Dispatchers.Main) { block.invoke() }
+    }
+
+    private fun showError(e: Exception) {
+        binding.errorView.apply {
+            text = ExceptionUtils.getErrorMessage(e)
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideError() {
+        binding.errorView.apply {
+            text = ""
+            visibility = View.GONE
         }
     }
 

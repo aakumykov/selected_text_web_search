@@ -3,18 +3,29 @@ package com.github.aakumykov.ktor_server
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.engine.stopServerOnCancellation
 import io.ktor.server.jetty.Jetty
+import io.ktor.server.jetty.JettyApplicationEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val EXTRAS_SERVER_IP_ADDRESS = "SERVER_IP_ADDRESS"
+const val EXTRAS_SERVER_PORT = "SERVER_PORT"
+
 class KtorService : Service() {
+
+    private var runningServer: JettyApplicationEngine? = null
+    private var inputIntent: Intent? = null
+    private val serverAddress get() = inputIntent?.getStringExtra(EXTRAS_SERVER_IP_ADDRESS) ?: DEFAULT_SERVER_IP
+    private val serverPort get() = inputIntent?.getIntExtra(EXTRAS_SERVER_PORT, DEFAULT_SERVER_PORT) ?: DEFAULT_SERVER_PORT
+
 
     private val mNotificationsBuilder: NotificationCompat.Builder by lazy {
         NotificationCompat.Builder(this, CHANNEL_ID)
@@ -35,9 +46,15 @@ class KtorService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
         prepareNotificationChannel()
         showDutyNotification()
         startKtorServer()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        inputIntent = intent
+        return START_NOT_STICKY
     }
 
     private fun showDutyNotification() {
@@ -50,6 +67,7 @@ class KtorService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        runningServer?.stop(500,1000)
     }
 
     private fun prepareNotificationChannel() {
@@ -91,15 +109,16 @@ class KtorService : Service() {
 
     private fun startKtorServer() {
         CoroutineScope(Dispatchers.IO).launch {
-            embeddedServer(
+
+            runningServer = embeddedServer(
                 Jetty,
+                host = serverAddress,
                 port = serverPort,
-                host = localIpAddress,
             ) {
                 configureWebsockets(KTOR_WEBSOCKET_SERVER_TAG, ":-)")
                 configureHttpRouting()
-            }
-                .start(wait = true) // TODO: попробовать wait = false
+            }.start(wait = true) // TODO: попробовать wait = false
+
         }
     }
 
