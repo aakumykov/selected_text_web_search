@@ -111,8 +111,9 @@ class KtorService : Service() {
     class Binder(val service: KtorService): android.os.Binder()
 }
 
+const val KTOR_SERVER_TAG: String = "KTOR_SERVER"
 
 fun Application.module() {
-    configureWebsockets()
+    configureWebsockets(KTOR_SERVER_TAG)
     configureHttpRouting()
 }
