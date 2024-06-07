@@ -1,5 +1,7 @@
 package com.github.aakumykov.ktor_server
 
+import android.util.Log
+import com.gitlab.aakumykov.exception_utils_module.ExceptionUtils
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.routing.routing
@@ -8,8 +10,11 @@ import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
+import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlin.coroutines.cancellation.CancellationException
 
-fun Application.configureWebsockets() {
+fun Application.configureWebsockets(loggingTag: String) {
+
     install(WebSockets) {
 //        pingPeriod = Duration.ofSeconds(15)
 //        timeout = Duration.ofSeconds(15)
@@ -19,7 +24,15 @@ fun Application.configureWebsockets() {
 
     routing {
         webSocket("/chat") {
-            send("Вы подключились!")
+
+            try {
+                outgoing.send(Frame.Text("Вы подключились!"))
+            } catch (e: ClosedSendChannelException) {
+                Log.e(loggingTag, ExceptionUtils.getErrorMessage(e))
+            } catch (e: CancellationException) {
+                Log.e(loggingTag, ExceptionUtils.getErrorMessage(e))
+            }
+
             for(frame in incoming) {
                 frame as? Frame.Text ?: continue
                 val receivedText = frame.readText()
