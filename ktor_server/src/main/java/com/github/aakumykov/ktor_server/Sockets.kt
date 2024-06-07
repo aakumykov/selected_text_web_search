@@ -9,7 +9,7 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
 
-fun Application.configureSockets() {
+fun Application.configureWebsockets() {
     install(WebSockets) {
 //        pingPeriod = Duration.ofSeconds(15)
 //        timeout = Duration.ofSeconds(15)
