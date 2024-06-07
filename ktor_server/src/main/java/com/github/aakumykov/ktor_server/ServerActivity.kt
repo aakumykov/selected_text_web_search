@@ -7,7 +7,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.github.aakumykov.ktor_server.databinding.ActivityServerBinding
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.websocket.wss
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.http.HttpMethod
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 class ServerActivity : AppCompatActivity() {
 
@@ -27,6 +37,25 @@ class ServerActivity : AppCompatActivity() {
 
     private fun connectToWebsocketServer() {
 
+        val client = HttpClient(OkHttp) {
+            engine {
+                preconfigured = OkHttpClient.Builder()
+                    .pingInterval(20, TimeUnit.SECONDS)
+                    .build()
+            }
+            install(WebSockets)
+        }
+
+        lifecycleScope.launch(Dispatchers.IO){
+            client.wss(
+                method = HttpMethod.Get,
+                host = "192.168.0.171",
+                port = 8080,
+                path = "/chat"
+            ) {
+
+            }
+        }
     }
 
     private fun startKtorService() {
