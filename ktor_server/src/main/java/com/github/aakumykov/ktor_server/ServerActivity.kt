@@ -1,12 +1,14 @@
 package com.github.aakumykov.ktor_server
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.Telephony.Carriers.PORT
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,6 +31,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import permissions.dispatcher.ktx.PermissionsRequester
+import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -60,16 +64,38 @@ class ServerActivity : AppCompatActivity() {
     private val serverAddressParts: List<String>? get() = binding.serverAddressInput.text?.split(":")
 
 
+    private lateinit var notificationsPermissionRequest: PermissionsRequester
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        preparePermissionsRequest()
         prepareLayout()
         displayIpAddress()
-//        startKtorService()
 
-        binding.startServiceButton.setOnClickListener { startKtorService() }
+        binding.startServiceButton.setOnClickListener { startKtorServiceWithNotificationsPermission() }
         binding.stopServiceButton.setOnClickListener { stopKtorService() }
         binding.connectToWebsocketServerButton.setOnClickListener { connectToWebsocketServer() }
+    }
+
+    private fun startKtorServiceWithNotificationsPermission() {
+        if (isAndroid33OrLater())
+            notificationsPermissionRequest.launch()
+        else
+            startKtorService()
+    }
+
+
+    private fun isAndroid33OrLater(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+
+    private fun preparePermissionsRequest() {
+        if (isAndroid33OrLater()) {
+            notificationsPermissionRequest = constructPermissionsRequest(
+                android.Manifest.permission.POST_NOTIFICATIONS,
+                requiresPermission = ::startKtorService
+            )
+        }
     }
 
     private fun displayIpAddress() {
