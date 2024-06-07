@@ -13,13 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#29B6F6"
-        android:text="Запустить службу" />
+        android:text="Запустить службу"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/stopServiceButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#EC407A"
-        android:text="Остановить службу" />
+        android:text="Остановить службу"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/connectToWebsocketServerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#26A69A"
+        android:text="Подключиться к WS-серверу"
+        app:icon="@drawable/ic_websocket"
+        app:iconGravity="textEnd"/>
 
 </LinearLayout>
