@@ -8,6 +8,13 @@
     android:orientation="vertical"
     tools:context=".ServerActivity" >
 
+    <TextView
+        android:id="@+id/ipAddressView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="ip-адрес" />
+
     <Button
         android:id="@+id/startServiceButton"
         android:layout_width="match_parent"

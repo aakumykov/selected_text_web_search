@@ -2,6 +2,7 @@ package com.github.aakumykov.ktor_server
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +14,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.http.HttpMethod
+import io.ktor.websocket.Frame
+import io.ktor.websocket.close
+import io.ktor.websocket.readText
+import io.ktor.websocket.send
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -28,11 +35,16 @@ class ServerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         prepareLayout()
+        displayIpAddress()
         startKtorService()
 
         binding.startServiceButton.setOnClickListener { startKtorService() }
         binding.stopServiceButton.setOnClickListener { stopKtorService() }
         binding.connectToWebsocketServerButton.setOnClickListener { connectToWebsocketServer() }
+    }
+
+    private fun displayIpAddress() {
+        binding.ipAddressView.text = localIpAddress
     }
 
     private fun connectToWebsocketServer() {
@@ -47,13 +59,31 @@ class ServerActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch(Dispatchers.IO){
-            client.wss(
+            client.webSocket(
                 method = HttpMethod.Get,
-                host = "192.168.0.171",
-                port = 8080,
+                host = localIpAddress,
+                port = serverPort,
                 path = "/chat"
             ) {
+                Log.d(TAG, "Слиент соединился с сервером. Сессия: $this")
 
+                incoming.receive().also { frame ->
+                    (frame as? Frame.Text)?.also { textFrame ->
+                        Log.d(TAG, "Получен ответ: "+textFrame.readText())
+                    }
+                }
+
+                send("Привет!")
+
+                incoming.receive().also { frame ->
+                    (frame as? Frame.Text)?.also { textFrame ->
+                        Log.d(TAG, "Получен ответ: "+textFrame.readText())
+                    }
+                }
+
+                delay(10000)
+                Log.d(TAG, "Слиент отключается от сервера.")
+                close()
             }
         }
     }
@@ -79,6 +109,10 @@ class ServerActivity : AppCompatActivity() {
 
     private fun showToast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        val TAG: String = ServerActivity::class.java.simpleName
     }
 }
 
