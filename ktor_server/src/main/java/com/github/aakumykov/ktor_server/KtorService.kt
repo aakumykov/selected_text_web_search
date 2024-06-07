@@ -44,7 +44,7 @@ class KtorService : Service() {
         showPersistentNotification(
             getString(R.string.KTOR_SERER_NOTIFICATION_title),
             getString(R.string.KTOR_SERER_NOTIFICATION_message_running),
-            R.drawable.ic_server
+            R.drawable.ic_websocket
         )
     }
 
@@ -109,6 +109,6 @@ class KtorService : Service() {
 
 
 fun Application.module() {
-    configureSockets()
-    configureRouting()
+    configureWebsockets()
+    configureHttpRouting()
 }
