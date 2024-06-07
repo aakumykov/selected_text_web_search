@@ -28,23 +28,17 @@ class ServerActivity : AppCompatActivity(), ServiceConnection {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prepareLayout()
-        binding.startServerButton.setOnClickListener { startServer() }
         binding.startServiceButton.setOnClickListener { startKtorService() }
         binding.stopServiceButton.setOnClickListener { stopKtorService() }
     }
 
-    private fun stopKtorService() {
-//        stopService(ktorServiceIntent)
-//        unbindService(this)
-        ktorService?.shutdown()
+    private fun startKtorService() {
+        startService(ktorServiceIntent)
+        bindService(ktorServiceIntent, this, BIND_AUTO_CREATE)
     }
 
-    private fun startKtorService() {
-        bindService(
-            ktorServiceIntent,
-            this,
-            BIND_AUTO_CREATE
-        )
+    private fun stopKtorService() {
+        stopService(ktorServiceIntent)
     }
 
     override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
@@ -57,12 +51,7 @@ class ServerActivity : AppCompatActivity(), ServiceConnection {
         showToast("Служба отключена")
     }
 
-    private fun startServer() {
-        CoroutineScope(Dispatchers.IO).launch {
-            embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-                .start(wait = true)
-        }
-    }
+
 
     private fun prepareLayout() {
         binding = ActivityServerBinding.inflate(layoutInflater)
@@ -80,7 +69,3 @@ class ServerActivity : AppCompatActivity(), ServiceConnection {
     }
 }
 
-fun Application.module() {
-    configureSockets()
-    configureRouting()
-}

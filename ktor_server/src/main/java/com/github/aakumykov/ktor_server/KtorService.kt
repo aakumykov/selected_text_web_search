@@ -7,6 +7,12 @@ import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class KtorService : Service() {
 
@@ -30,6 +36,11 @@ class KtorService : Service() {
     override fun onCreate() {
         super.onCreate()
         prepareNotificationChannel()
+        showDutyNotification()
+        startKtorServer()
+    }
+
+    private fun showDutyNotification() {
         showPersistentNotification(
             getString(R.string.KTOR_SERER_NOTIFICATION_title),
             getString(R.string.KTOR_SERER_NOTIFICATION_message_running),
@@ -78,6 +89,14 @@ class KtorService : Service() {
     }
 
 
+    private fun startKtorServer() {
+        CoroutineScope(Dispatchers.IO).launch {
+            embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+                .start(wait = true)
+        }
+    }
+
+
     companion object {
         val TAG: String = KtorService::class.java.simpleName
         val CHANNEL_ID: String = "${TAG}_notification_channel_id"
@@ -86,4 +105,10 @@ class KtorService : Service() {
 
 
     class Binder(val service: KtorService): android.os.Binder()
+}
+
+
+fun Application.module() {
+    configureSockets()
+    configureRouting()
 }
