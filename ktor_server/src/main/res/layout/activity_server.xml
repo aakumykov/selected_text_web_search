@@ -14,4 +14,18 @@
         android:layout_height="wrap_content"
         android:text="Запустить сервер" />
 
+    <Button
+        android:id="@+id/startServiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#29B6F6"
+        android:text="Подключить службу" />
+
+    <Button
+        android:id="@+id/stopServiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EC407A"
+        android:text="Отключить службу" />
+
 </LinearLayout>
