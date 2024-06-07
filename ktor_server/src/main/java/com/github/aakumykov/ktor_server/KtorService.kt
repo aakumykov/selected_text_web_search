@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.server.jetty.Jetty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,8 +91,12 @@ class KtorService : Service() {
 
     private fun startKtorServer() {
         CoroutineScope(Dispatchers.IO).launch {
-            embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-                .start(wait = true)
+            embeddedServer(
+                Jetty,
+                port = serverPort,
+                host = localIpAddress,
+                module = Application::module
+            ).start(wait = true) // TODO: попробовать wait = false
         }
     }
 
