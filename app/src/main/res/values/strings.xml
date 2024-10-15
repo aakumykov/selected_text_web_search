@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Веб-поиск</string>
-    <string name="web_search">Гуглить</string>
-    <string name="exact_web_search">Точно Гуглить</string>
-    <string name="where_is_no_text_to_search">Нет текста для поиска</string>
-    <string name="web_search_description">Поиск выделенного текста в Google</string>
-    <string name="exact_web_search_description">Поиск выделенного текста в Google в точной форме</string>
+    <string name="app_name">Selected text web search</string>
+    <string name="web_search">Google it</string>
+    <string name="exact_web_search">Google exactly it</string>
+    <string name="where_is_no_text_to_search">Nothing to search</string>
+    <string name="web_search_description">Searching selected text in Web</string>
+    <string name="exact_web_search_description">Searching selected text in Web in exact form</string>
 </resources>
