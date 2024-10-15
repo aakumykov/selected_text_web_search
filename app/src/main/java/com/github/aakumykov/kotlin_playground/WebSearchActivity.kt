@@ -4,18 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import com.github.aakumykov.kotlin_playground.databinding.ActivityMainBinding
 
 class WebSearchActivity : Activity() {
 
-    private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         processIntentAndFinish(intent)
     }
 
@@ -31,7 +24,6 @@ class WebSearchActivity : Activity() {
 
     private fun processInputIntent(intent: Intent?) {
         intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
-            binding.selectedTextView.text = text
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         }
     }
