@@ -7,18 +7,19 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_web_search"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoDisplay"
         tools:targetApi="31">
 
 
         <activity
-            android:name=".SimpleGoogleSearchActivity"
+            android:name="com.github.aakumykov.selected_text_web_search.SimpleGoogleSearchActivity"
             android:exported="true"
             android:label="@string/web_search"
             android:description="@string/web_search_description"
-            android:icon="@mipmap/ic_web_search"
+            android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTop">
 
             <intent-filter>
@@ -35,7 +36,7 @@
 
 
         <activity
-            android:name=".ExactGoogleSearchActivity"
+            android:name="com.github.aakumykov.selected_text_web_search.ExactGoogleSearchActivity"
             android:exported="true"
             android:label="@string/exact_web_search"
             android:description="@string/exact_web_search_description"
