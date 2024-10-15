@@ -1,10 +1,11 @@
-package com.github.aakumykov.kotlin_playground
+package com.github.aakumykov.selected_text_web_search
 
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import com.github.aakumykov.selected_text_web_search.git.R
 
-class ExactGoogleSearchActivity : GoogleSearchActivity() {
+class SimpleGoogleSearchActivity : GoogleSearchActivity() {
 
     private fun processInputIntent(intent: Intent?) {
         intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
@@ -15,16 +16,10 @@ class ExactGoogleSearchActivity : GoogleSearchActivity() {
     }
 
     override fun text2searchUri(text: String): Uri {
-        val quotedText = "\"$text\""
-        return Uri.parse(
-            GOOGLE_SEARCH_BASE_URL
-                + quotedText
-                + GOOGLE_NO_MODIFY_FLAG
-        )
+        return Uri.parse(GOOGLE_SEARCH_BASE_URL+text)
     }
 
     companion object {
         val TAG: String = GoogleSearchActivity::class.java.simpleName
-        const val GOOGLE_NO_MODIFY_FLAG = "&nfpr=1"
     }
 }

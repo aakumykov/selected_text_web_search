@@ -1,10 +1,11 @@
-package com.github.aakumykov.kotlin_playground
+package com.github.aakumykov.selected_text_web_search
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import com.github.aakumykov.selected_text_web_search.git.R
 
 const val GOOGLE_SEARCH_BASE_URL = "https://www.google.com/search?q="
 

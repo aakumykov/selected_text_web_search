@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kotlin_playground"
+rootProject.name = "selected_text_web_search"
 include ':app'

@@ -1,4 +1,4 @@
-package com.github.aakumykov.kotlin_playground.extensions
+package com.github.aakumykov.selected_text_web_search.extensions
 
 import android.app.Activity
 import android.content.Intent
@@ -6,7 +6,6 @@ import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat.startActivity
 
 fun Activity.showToast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()

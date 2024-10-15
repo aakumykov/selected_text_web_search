@@ -1,4 +1,4 @@
-package com.github.aakumykov.kotlin_playground.extensions
+package com.github.aakumykov.selected_text_web_search.extensions
 
 import android.util.Log
 

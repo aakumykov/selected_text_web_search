@@ -1,4 +1,4 @@
-package com.github.aakumykov.kotlin_playground
+package com.github.aakumykov.selected_text_web_search
 
 import org.junit.Assert.*
 import org.junit.Test
