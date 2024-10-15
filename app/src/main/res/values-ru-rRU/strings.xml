@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Веб-поиск выделенного текста</string>
     <string name="web_search">Гуглить</string>
-    <string name="exact_web_search">Гуглить точно это</string>
+    <string name="exact_web_search">Гуглить в точности</string>
     <string name="where_is_no_text_to_search">Нечего искать</string>
     <string name="web_search_description">Поиск выделенного текста в Google</string>
     <string name="exact_web_search_description">Поиск выделенного текста в Google в точной форме</string>
