@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 
-class WebSearchActivity : Activity() {
+class GoogleSearchActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +29,6 @@ class WebSearchActivity : Activity() {
     }
 
     companion object {
-        val TAG: String = WebSearchActivity::class.java.simpleName
+        val TAG: String = GoogleSearchActivity::class.java.simpleName
     }
 }
