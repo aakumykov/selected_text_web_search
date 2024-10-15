@@ -1,12 +1,12 @@
 package com.github.aakumykov.kotlin_playground
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.github.aakumykov.kotlin_playground.databinding.ActivityMainBinding
 
-class WebSearchActivity : AppCompatActivity() {
+class WebSearchActivity : Activity() {
 
     private lateinit var binding: ActivityMainBinding
 
