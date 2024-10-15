@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Песочница Kotlin</string>
-    <string name="sample_text">Не́нцы (нен. ненэй ненэцьʼ (буквально — «настоящий человек»), хасово, неш. нещанг; устар. самоеды, самоядь, юраки[5]) — самодийский народ в России, населяющий евразийское побережье Северного Ледовитого океана от Кольского полуострова до Таймыра.</string>
-    <string name="web_search">Google</string>
-    <string name="exact_web_search">Google (точно)</string>
+    <string name="web_search">Гуглить</string>
+    <string name="exact_web_search">Гуглить точно</string>
+    <string name="where_is_no_text_to_search">Нет текста для поиска</string>
 </resources>
