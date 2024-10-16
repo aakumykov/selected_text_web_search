@@ -9,7 +9,7 @@ class SimpleGoogleSearchActivity : GoogleSearchActivity() {
 
     private fun processInputIntent(intent: Intent?) {
         intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
-            searchTheWeb(text)
+            startSearchingTheWeb(text)
         } ?: run {
             Toast.makeText(this, R.string.where_is_no_text_to_search, Toast.LENGTH_SHORT).show()
         }

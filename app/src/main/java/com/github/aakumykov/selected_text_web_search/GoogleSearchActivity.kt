@@ -27,14 +27,34 @@ abstract class GoogleSearchActivity : Activity() {
     }
 
     private fun processInputIntent(intent: Intent?) {
-        intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
-            searchTheWeb(text)
-        } ?: run {
-            Toast.makeText(this, R.string.where_is_no_text_to_search, Toast.LENGTH_SHORT).show()
+        when(intent?.action) {
+            Intent.ACTION_PROCESS_TEXT -> processSelectedText(intent)
+            Intent.ACTION_SEND -> processSendedText(intent)
+            else -> reportNothingToSearch()
         }
     }
 
-    protected fun searchTheWeb(text: String) {
+    private fun processSendedText(intent: Intent) {
+        processTextFromIntent(intent, Intent.EXTRA_TEXT)
+    }
+
+    private fun processSelectedText(intent: Intent) {
+        processTextFromIntent(intent, Intent.EXTRA_PROCESS_TEXT)
+    }
+
+    private fun processTextFromIntent(intent: Intent, extraKey: String) {
+        intent.getCharSequenceExtra(extraKey)?.toString()?.also { text ->
+            startSearchingTheWeb(text)
+        } ?: run {
+            reportNothingToSearch()
+        }
+    }
+
+    private fun reportNothingToSearch() {
+        Toast.makeText(this, R.string.where_is_no_text_to_search, Toast.LENGTH_SHORT).show()
+    }
+
+    protected fun startSearchingTheWeb(text: String) {
         Intent(Intent.ACTION_VIEW, text2searchUri(text)).also {
             startActivity(it)
         }
