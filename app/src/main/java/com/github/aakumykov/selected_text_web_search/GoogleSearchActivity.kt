@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import com.github.aakumykov.selected_text_web_search.extensions.showToast
 import com.github.aakumykov.selected_text_web_search.git.R
 
 const val GOOGLE_SEARCH_BASE_URL = "https://www.google.com/search?q="
@@ -27,11 +28,24 @@ abstract class GoogleSearchActivity : Activity() {
     }
 
     private fun processInputIntent(intent: Intent?) {
-        intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
+        intent?.also {
+            if (Intent.ACTION_PROCESS_TEXT == intent.action) processIntentText(intent)
+            else reportHowItWorks()
+        } ?: run {
+            reportHowItWorks()
+        }
+    }
+
+    private fun processIntentText(intent: Intent) {
+        intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()?.also { text ->
             searchTheWeb(text)
         } ?: run {
             Toast.makeText(this, R.string.where_is_no_text_to_search, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun reportHowItWorks() {
+        showToast(R.string.works_only_on_selected_text)
     }
 
     protected fun searchTheWeb(text: String) {
