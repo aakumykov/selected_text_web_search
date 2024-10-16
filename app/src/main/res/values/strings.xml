@@ -5,5 +5,4 @@
     <string name="where_is_no_text_to_search">Nothing to search</string>
     <string name="web_search_description">Searching selected text in Web</string>
     <string name="exact_web_search_description">Searching selected text in Web in exact form</string>
-    <string name="works_only_on_selected_text">Use on selected text</string>
 </resources>
