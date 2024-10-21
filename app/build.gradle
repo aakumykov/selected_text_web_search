@@ -6,22 +6,34 @@ plugins {
 
 android {
 
-    def keystorePropertiesFile = file("../local.properties");
+    def keystorePropertiesFileName = "../local.properties"
     def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(new FileInputStream(file(keystorePropertiesFileName)))
+
+    def keystoreFile = keystoreProperties['storeFile']
+    if (null == keystoreFile) throw new NullPointerException("There is no 'storeFile' field in "+keystorePropertiesFileName)
+
+    def keystorePassword = keystoreProperties['storePassword']
+    if (null == keystorePassword) throw new NullPointerException("There is no 'storePassword' field in "+keystorePropertiesFileName)
+
+    def keyAlias = keystoreProperties['keyAlias']
+    if (null == keyAlias) throw new NullPointerException("There is no 'keyAlias' field in "+keystorePropertiesFileName)
+
+    def keyPassword = keystoreProperties['keyPassword']
+    if (null == keyPassword) throw new NullPointerException("There is no 'keyPassword' field in "+keystorePropertiesFileName)
 
     signingConfigs {
         release {
-            storeFile = file(keystoreProperties['storeFile'])
-            storePassword = keystoreProperties['storePassword']
-            keyAlias = keystoreProperties['keyAlias']
-            keyPassword = keystoreProperties['keyPassword']
+            storeFile = file(keystoreFile)
+            storePassword = keystorePassword
+            keyAlias = keyAlias
+            keyPassword = keyPassword
         }
         debug {
-            storeFile = file(keystoreProperties['storeFile'])
-            storePassword = keystoreProperties['storePassword']
-            keyAlias = keystoreProperties['keyAlias']
-            keyPassword = keystoreProperties['keyPassword']
+            storeFile = file(keystoreFile)
+            storePassword = keystorePassword
+            keyAlias = keyAlias
+            keyPassword = keyAlias
         }
     }
 
