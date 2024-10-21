@@ -16,24 +16,25 @@ android {
     def keystorePassword = keystoreProperties['storePassword']
     if (null == keystorePassword) throw new NullPointerException("There is no 'storePassword' field in "+keystorePropertiesFileName)
 
-    def keyAlias = keystoreProperties['keyAlias']
-    if (null == keyAlias) throw new NullPointerException("There is no 'keyAlias' field in "+keystorePropertiesFileName)
+    /* Не называй переменную 'keyAlias' - это нарушает работу скрипта. */
+    def keystoreKeyAlias = keystoreProperties['keyAlias']
+    if (null == keystoreKeyAlias) throw new NullPointerException("There is no 'keyAlias' field in "+keystorePropertiesFileName)
 
-    def keyPassword = keystoreProperties['keyPassword']
-    if (null == keyPassword) throw new NullPointerException("There is no 'keyPassword' field in "+keystorePropertiesFileName)
+    def keystoreKeyPassword = keystoreProperties['keyPassword']
+    if (null == keystoreKeyPassword) throw new NullPointerException("There is no 'keyPassword' field in "+keystorePropertiesFileName)
 
     signingConfigs {
         release {
             storeFile = file(keystoreFile)
             storePassword = keystorePassword
-            keyAlias = keyAlias
-            keyPassword = keyPassword
+            keyAlias = keystoreKeyAlias
+            keyPassword = keystoreKeyPassword
         }
         debug {
             storeFile = file(keystoreFile)
             storePassword = keystorePassword
-            keyAlias = keyAlias
-            keyPassword = keyAlias
+            keyAlias = keystoreKeyAlias
+            keyPassword = keystoreKeyPassword
         }
     }
 
