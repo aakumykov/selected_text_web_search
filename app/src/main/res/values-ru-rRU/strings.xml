@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Веб-поиск выделенного текста</string>
+    <string name="app_name">Поиск выделенного текста</string>
     <string name="web_search">Гуглить</string>
     <string name="exact_web_search">Гуглить точно</string>
     <string name="where_is_no_text_to_search">Нечего искать</string>
