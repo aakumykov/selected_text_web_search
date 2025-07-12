@@ -10,11 +10,11 @@ android {
     def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(file(keystorePropertiesFileName)))
 
-    def keystoreFile = keystoreProperties['storeFile']
-    if (null == keystoreFile) throw new NullPointerException("There is no 'storeFile' field in "+keystorePropertiesFileName)
+    def keystoreFile = keystoreProperties['keystoreFile']
+    if (null == keystoreFile) throw new NullPointerException("There is no 'keystoreFile' field in "+keystorePropertiesFileName)
 
-    def keystorePassword = keystoreProperties['storePassword']
-    if (null == keystorePassword) throw new NullPointerException("There is no 'storePassword' field in "+keystorePropertiesFileName)
+    def keystorePassword = keystoreProperties['keystorePassword']
+    if (null == keystorePassword) throw new NullPointerException("There is no 'keystorePassword' field in "+keystorePropertiesFileName)
 
     /* Не называй переменную 'keyAlias' - это нарушает работу скрипта. */
     def keystoreKeyAlias = keystoreProperties['keyAlias']
@@ -39,14 +39,14 @@ android {
     }
 
     namespace 'com.github.aakumykov.selected_text_web_search.git'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.github.aakumykov.selected_text_web_search.git"
         minSdk 23
-        targetSdk 34
-        versionCode 7
-        versionName "3.0"
+        targetSdk 36
+        versionCode 8
+        versionName "3.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
